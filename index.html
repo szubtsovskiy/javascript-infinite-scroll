@@ -11,21 +11,26 @@
     body {
       margin: 20px 0;
     }
-    .content div {
+    #content {
+      height: 700px;
+      width: 600px;
+      overflow: auto;
+    }
+
+    #content div {
       margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
-  <!-- TODO next: create a container element with infinitely scrollable content -->
-  <!-- TODO next: populate the container with arbitrary amount of lipsum paragraphs depending on the container's hight -->
+  <!-- TODO next: populate the container with arbitrary amount of lipsum paragraphs depending on the container's height -->
   <!-- TODO next: add loading icon (e.g. from fontawesome) showing that additional content is loading -->
   <!-- TODO next: reverse the solution: load content on top of the container -->
   <!-- TODO next: write same solution(s) in Elm -->
   <div class="container">
     <div class="row">
       <div class="col-md-6 col-md-offset-3 col-xs-12">
-        <div id="content" class="well content">
+        <div id="content" class="well">
           <div>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sodales felis in ligula ullamcorper elementum. Sed consequat cursus ex, sit amet vulputate nisi consectetur id. Phasellus sit amet justo ut sem laoreet vestibulum a at arcu. Donec lacinia ante ac tempus maximus. Praesent blandit vulputate tellus eu varius. Proin vel nunc vel lacus cursus dignissim eget et magna. Nunc mollis libero finibus eros semper condimentum. Curabitur imperdiet faucibus metus, et euismod sapien posuere ut. Phasellus mollis tincidunt tellus. Fusce ut dapibus lacus. Fusce a blandit urna, a fermentum massa.
           </div>
@@ -49,12 +54,13 @@
     </div>
   </div>
   <script type="text/javascript">
-    var content = document.getElementById("content");
-    window.onscroll = function() {
-      var scrollY = window.scrollY;
-      var visibleHeight = window.innerHeight;
-      var documentHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.body.clientHeight);
-      if (scrollY >= documentHeight - visibleHeight) {
+    var container = document.getElementById("content");
+    container.onscroll = function() {
+      var scrollTop = container.scrollTop;
+      var scrollHeight = container.scrollHeight;
+      var containerHeight = Math.max(container.offsetHeight, container.clientHeight);
+
+      if (scrollTop > scrollHeight - containerHeight) {
         fetch('http://lipsum.com/feed/json?what=paras&amount=1&start=no')
             .then(function(response) {
               return response.json();
@@ -62,7 +68,7 @@
             .then(function(json) {
               var p = document.createElement("div");
               p.appendChild(document.createTextNode(json.feed.lipsum));
-              content.appendChild(p);
+              container.appendChild(p);
             });
       }
     };
