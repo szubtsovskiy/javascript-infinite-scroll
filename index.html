@@ -7,6 +7,7 @@
         integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
         integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
   <style type="text/css">
     body {
       margin: 20px 0;
@@ -24,16 +25,28 @@
     #content div:last-child {
       margin-bottom: 40px;
     }
+
+    #loader-icon {
+      position: absolute;
+      width: 100%;
+      left: 0;
+      bottom: 20px;
+      text-align: center;
+      display: none;
+    }
+
   </style>
 </head>
 <body>
-  <!-- TODO next: add loading icon (e.g. from fontawesome) showing that additional content is loading -->
   <!-- TODO next: reverse the solution: load content on top of the container -->
   <!-- TODO next: write same solution(s) in Elm -->
   <div class="container">
     <div class="row">
       <div class="col-md-6 col-md-offset-3 col-xs-12">
         <div id="content" class="well">
+          <div id="loader-icon">
+            <i class="fa fa-spinner fa-pulse fa-2x"> </i>
+          </div>
         </div>
       </div>
     </div>
@@ -42,11 +55,14 @@
 
     var container = document.getElementById("content");
     var containerHeight = Math.max(container.offsetHeight, container.clientHeight);
+    var loaderIcon = document.getElementById("loader-icon");
 
     function fetchLoremIpsum(amountOfParagraphs, startWithLoremIpsum = false) {
+      loaderIcon.style.display = 'block';
       fetch(`http://lipsum.com/feed/json?what=paras&amount=${amountOfParagraphs}&start=${startWithLoremIpsum ? 'yes' : 'no'}`)
           .then(response => response.json())
           .then(json => {
+            loaderIcon.style.display = 'none';
             var text = json.feed.lipsum;
             for ( var p of text.split('\n')) {
               var el = document.createElement('div');
