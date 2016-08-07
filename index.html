@@ -2,27 +2,25 @@
 
 <html>
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8"/>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
         integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
         integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css"
+        href="http://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
   <style type="text/css">
     body {
       margin: 20px 0;
     }
-    #container-direct {
+
+    #container-direct, #container-reversed {
       height: 700px;
       width: 100%;
       overflow: auto;
     }
 
-    #container-direct div {
-      margin-bottom: 10px;
-    }
-
-    #container-direct div:last-child {
+    #container-direct p:last-child {
       margin-bottom: 40px;
     }
 
@@ -30,7 +28,20 @@
       position: absolute;
       width: 100%;
       left: 0;
-      bottom: 20px;
+      bottom: 30px;
+      text-align: center;
+      display: none;
+    }
+
+    #container-reversed p:first-child {
+      margin-top: 40px;
+    }
+
+    #loader-icon-reversed {
+      position: absolute;
+      width: 100%;
+      left: 0;
+      top: 50px;
       text-align: center;
       display: none;
     }
@@ -38,51 +49,59 @@
   </style>
 </head>
 <body>
-  <!-- TODO next: reverse the solution: load content on top of the container -->
-  <!-- TODO next: write same solution(s) in Elm -->
 
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6 col-md-offset-3 col-xs-12">
-        <ul id="exampleTabs" class="nav nav-pills nav-justified" role="tablist">
-          <li role="presentation" class="active"><a href="#direct" data-toggle="tab">Direct</a></li>
-          <li role="presentation"><a href="#reversed" data-toggle="tab">Reversed</a>
-          </li>
-        </ul>
+<!-- TODO next: write same solution(s) in Elm -->
 
-        <div class="tab-content" id="exampleContent">
-          <div role="tabpanel" class="tab-pane active fade in" id="direct">
-            <div id="container-direct" class="well">
-              <div id="loader-icon-direct">
-                <i class="fa fa-spinner fa-pulse fa-2x"> </i>
-              </div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3 col-xs-12">
+      <ul id="exampleTabs" class="nav nav-pills nav-justified" role="tablist">
+        <li role="presentation" class="active"><a href="#direct" data-toggle="tab">Direct</a></li>
+        <li role="presentation"><a href="#reversed" data-toggle="tab">Reversed</a>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="exampleContent">
+        <div role="tabpanel" class="tab-pane active fade in" id="direct">
+          <div id="container-direct" class="well">
+            <div id="loader-icon-direct">
+              <i class="fa fa-spinner fa-pulse fa-2x"> </i>
             </div>
           </div>
-          <div role="tabpanel" class="tab-pane fade" id="reversed">
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="reversed">
+          <div id="container-reversed" class="well">
+            <div id="loader-icon-reversed">
+              <i class="fa fa-spinner fa-pulse fa-2x"> </i>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <script src="http://code.jquery.com/jquery-2.2.4.min.js"
-          integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</div>
+<script src="http://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
 
-  <script type="text/javascript">
-    function fetchLoremIpsum(amountOfParagraphs, startWithLoremIpsum = false) {
-      return fetch(`http://lipsum.com/feed/json?what=paras&amount=${amountOfParagraphs}&start=${startWithLoremIpsum ? 'yes' : 'no'}`)
-          .then(response => response.json())
-          .then(json => {
-            var text = json.feed.lipsum;
-            return Promise.resolve(text.split('\n'))
-          });
-    }
-  </script>
+<script type="text/javascript">
+  function fetchLoremIpsum(amountOfParagraphs, startWithLoremIpsum = false) {
+    return fetch(`http://lipsum.com/feed/json?what=paras&amount=${amountOfParagraphs}&start=${startWithLoremIpsum ? 'yes' : 'no'}`)
+        .then(response => response.json())
+        .then(json => {
+          var text = json.feed.lipsum;
+          return Promise.resolve(text.split('\n'))
+        });
+  }
+</script>
 
-  <script type="text/javascript">
+<script type="text/javascript">
 
-    // Init and populate "Direct" tab
+  // Init and populate "Direct" tab
 
+  (function () {
     var containerId = "container-direct";
     var loaderIconId = "loader-icon-direct";
 
@@ -90,15 +109,15 @@
     var containerHeight = Math.max(container.offsetHeight, container.clientHeight);
     var loaderIcon = document.getElementById(loaderIconId);
 
-    var appendParagraphs = function(paragraphs) {
-      for ( var p of paragraphs ) {
-        var el = document.createElement('div');
+    var appendParagraphs = function (paragraphs) {
+      for (var p of paragraphs) {
+        var el = document.createElement('p');
         el.appendChild(document.createTextNode(p));
         container.appendChild(el);
       }
     };
 
-    container.onscroll = function() {
+    container.onscroll = function () {
       var scrollTop = container.scrollTop;
       var scrollHeight = container.scrollHeight;
 
@@ -115,7 +134,46 @@
         .then(appendParagraphs)
         .then(() => loaderIcon.style.display = 'none');
 
-  </script>
+  })();
 
+</script>
+
+<script type="text/javascript">
+
+  // Init and populate "Reversed" tab when it is shown
+
+  $('a[href="#reversed"]').on('shown.bs.tab', function () {
+    var containerId = "container-reversed";
+    var loaderIconId = "loader-icon-reversed";
+
+    var container = document.getElementById(containerId);
+    var containerHeight = Math.max(container.offsetHeight, container.clientHeight);
+    var loaderIcon = document.getElementById(loaderIconId);
+
+    var prependParagraphs = function (paragraphs) {
+      for (var p of paragraphs) {
+        var el = document.createElement('p');
+        el.appendChild(document.createTextNode(p));
+        container.insertBefore(el, container.firstElementChild);
+      }
+    };
+
+    container.onscroll = function () {
+      if (container.scrollTop == 0) {
+        loaderIcon.style.display = 'block';
+        fetchLoremIpsum(1)
+            .then(prependParagraphs)
+            .then(() => container.scrollTop = 40)
+            .then(() => loaderIcon.style.display = 'none');
+      }
+    };
+
+    fetchLoremIpsum(7, true)
+        .then(prependParagraphs)
+        .then(() => container.scrollTop = container.scrollHeight - containerHeight)
+        .then(() => loaderIcon.style.display = 'none');
+  });
+
+</script>
 </body>
 </html>
