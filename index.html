@@ -12,21 +12,21 @@
     body {
       margin: 20px 0;
     }
-    #content {
+    #container-direct {
       height: 700px;
-      width: 600px;
+      width: 100%;
       overflow: auto;
     }
 
-    #content div {
+    #container-direct div {
       margin-bottom: 10px;
     }
 
-    #content div:last-child {
+    #container-direct div:last-child {
       margin-bottom: 40px;
     }
 
-    #loader-icon {
+    #loader-icon-direct {
       position: absolute;
       width: 100%;
       left: 0;
@@ -40,49 +40,82 @@
 <body>
   <!-- TODO next: reverse the solution: load content on top of the container -->
   <!-- TODO next: write same solution(s) in Elm -->
+
   <div class="container">
     <div class="row">
       <div class="col-md-6 col-md-offset-3 col-xs-12">
-        <div id="content" class="well">
-          <div id="loader-icon">
-            <i class="fa fa-spinner fa-pulse fa-2x"> </i>
+        <ul id="exampleTabs" class="nav nav-pills nav-justified" role="tablist">
+          <li role="presentation" class="active"><a href="#direct" data-toggle="tab">Direct</a></li>
+          <li role="presentation"><a href="#reversed" data-toggle="tab">Reversed</a>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="exampleContent">
+          <div role="tabpanel" class="tab-pane active fade in" id="direct">
+            <div id="container-direct" class="well">
+              <div id="loader-icon-direct">
+                <i class="fa fa-spinner fa-pulse fa-2x"> </i>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane fade" id="reversed">
           </div>
         </div>
       </div>
     </div>
   </div>
+  <script src="http://code.jquery.com/jquery-2.2.4.min.js"
+          integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
   <script type="text/javascript">
-
-    var container = document.getElementById("content");
-    var containerHeight = Math.max(container.offsetHeight, container.clientHeight);
-    var loaderIcon = document.getElementById("loader-icon");
-
     function fetchLoremIpsum(amountOfParagraphs, startWithLoremIpsum = false) {
-      loaderIcon.style.display = 'block';
-      fetch(`http://lipsum.com/feed/json?what=paras&amount=${amountOfParagraphs}&start=${startWithLoremIpsum ? 'yes' : 'no'}`)
+      return fetch(`http://lipsum.com/feed/json?what=paras&amount=${amountOfParagraphs}&start=${startWithLoremIpsum ? 'yes' : 'no'}`)
           .then(response => response.json())
           .then(json => {
-            loaderIcon.style.display = 'none';
             var text = json.feed.lipsum;
-            for ( var p of text.split('\n')) {
-              var el = document.createElement('div');
-              el.appendChild(document.createTextNode(p));
-              container.appendChild(el);
-            }
+            return Promise.resolve(text.split('\n'))
           });
     }
+  </script>
+
+  <script type="text/javascript">
+
+    // Init and populate "Direct" tab
+
+    var containerId = "container-direct";
+    var loaderIconId = "loader-icon-direct";
+
+    var container = document.getElementById(containerId);
+    var containerHeight = Math.max(container.offsetHeight, container.clientHeight);
+    var loaderIcon = document.getElementById(loaderIconId);
+
+    var appendParagraphs = function(paragraphs) {
+      for ( var p of paragraphs ) {
+        var el = document.createElement('div');
+        el.appendChild(document.createTextNode(p));
+        container.appendChild(el);
+      }
+    };
 
     container.onscroll = function() {
       var scrollTop = container.scrollTop;
       var scrollHeight = container.scrollHeight;
 
       if (scrollTop > scrollHeight - containerHeight) {
-        fetchLoremIpsum(1);
+        loaderIcon.style.display = 'block';
+        fetchLoremIpsum(1)
+            .then(appendParagraphs)
+            .then(() => loaderIcon.style.display = 'none');
       }
     };
 
-    fetchLoremIpsum(7, true);
+    loaderIcon.style.display = 'block';
+    fetchLoremIpsum(7, true)
+        .then(appendParagraphs)
+        .then(() => loaderIcon.style.display = 'none');
 
   </script>
+
 </body>
 </html>
